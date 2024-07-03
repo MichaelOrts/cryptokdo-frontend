@@ -3,6 +3,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button"
 
 import PrizePool from "@/components/PrizePool"
+import CreatePrizePool from "./CreatePrizePool";
 
 import { publicClientSepolia as publicClient } from "@/utils/client";
 import { contractAddress, contractAbi } from "@/constant";
@@ -116,6 +117,7 @@ const CryptoKDO = () => {
         </div>
         <Button onClick={func}>Get Prize Pool</Button>
         <Button onClick={func2}>Create Prize Pool</Button>
+        <CreatePrizePool />
       </div>
     );
   }
