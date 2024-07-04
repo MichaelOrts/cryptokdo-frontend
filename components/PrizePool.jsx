@@ -55,29 +55,29 @@ const PrizePool = ({data}) => {
     }
 
     return (
-        <Card className="bg-gradient-to-b from-blue-500 to-purple-500">
-            <CardHeader>
+        <Card className="flex flex-col bg-gradient-to-b from-blue-500 to-purple-500">
+            <CardHeader className="">
                 <CardTitle>Prize Pool</CardTitle>
                 <CardDescription>Prize Pool Description</CardDescription>
             </CardHeader>
             <CardContent className="">
                 <p className="font-bold">Owner</p>
-                <p className="text-right">{data[0].owner}</p>
+                <p className="text-right">{data[0].owner.toLowerCase()}</p>
                 <p className="font-bold">Receiver</p>
-                <p className="text-right">{data[0].receiver}</p>
+                <p className="text-right">{data[0].receiver.toLowerCase()}</p>
                 <p className="font-bold">Givers</p>
                 {data[0].givers.length > 0 && data[0].givers.map((giver, id) => {
                     return (
-                        <p className="text-right">{giver}</p>
+                        <p className="text-right">{giver.toLowerCase()}</p>
                     )
                 })}
                 <p className="font-bold">Amount</p>
                 <p className="text-right">{formatEther(data[0].amount)} ETH</p>
             </CardContent>
-            <CardFooter className="flex flex-col gap-2 flex-wrap">
-                <div className="flex flex-row">
+            <CardFooter className="h-full flex flex-col gap-2 flex-wrap place-content-end">
+                <div className="flex flex-row flex-span w-full gap-2">
                     <Input id="amount" defaultValue="" className="w-full" value={amount} onChange={ e => setAmount(e.target.value)} />
-                    <Button className="w-full" onClick={donate}>Donate</Button>
+                    <Button className="" onClick={donate}>Donate</Button>
                 </div>
                 <Button className="w-full" onClick={closePrizePool}>Close</Button>
             </CardFooter>

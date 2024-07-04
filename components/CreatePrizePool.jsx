@@ -64,7 +64,7 @@ const CreatePrizePool = () => {
     return (
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline">Create Prize Pool</Button>
+            <Button>Create Prize Pool</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader className="flex items-center">
@@ -76,7 +76,7 @@ const CreatePrizePool = () => {
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="receiver" className="text-left">
-                  Receiver
+                  Receiver :
                 </Label>
                 <Input id="receiver" defaultValue="" className="col-span-3" value={receiver} onChange={ e => setReceiver(e.target.value)} />
               </div>
@@ -85,7 +85,7 @@ const CreatePrizePool = () => {
                 </Label>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="giver" className="text-left">
-                  Giver
+                  Giver :
                 </Label>
                 <Input id="giver" defaultValue="" className="col-span-3" value={currentGiver} onChange={ e => setCurrentGiver(e.target.value)} />
               </div>
@@ -99,10 +99,10 @@ const CreatePrizePool = () => {
                     )
                 })}
               </div>
-              <Button onClick={handleAddGiver}>Add Giver</Button>
+              <Button className="justify-self-center" onClick={handleAddGiver}>Add Giver</Button>
             </div>
-            <DialogFooter>
-              <DialogClose type="submit" onClick={createPrizePool}>Create</DialogClose>
+            <DialogFooter className="grid grid-cols-1">
+              <DialogClose type="submit" className="h-10 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90" onClick={createPrizePool}>Create</DialogClose>
             </DialogFooter>
           </DialogContent>
         </Dialog>

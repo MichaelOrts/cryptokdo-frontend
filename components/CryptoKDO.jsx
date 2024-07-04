@@ -84,16 +84,16 @@ const CryptoKDO = () => {
     }, [])
 
     return (
-        <div className="flex flex-col justify-end">
-        <div className="flex flex-row flex-wrap gap-3 m-3 justify-center">
-            {prizePools.length > 0 && prizePools.map((prizePool, id) => {
-                return (
-                    <PrizePool data={[prizePool, id]}/>
-                )
-            })}
-        </div>
-        <Button onClick={func}>Get Prize Pool</Button>
-        <CreatePrizePool />
+        <div className="flex flex-col justify-end gap-3">
+            <div className="flex flex-row flex-wrap gap-3 m-3 justify-center">
+                {prizePools.length > 0 && prizePools.map((prizePool, id) => {
+                    return (
+                        <PrizePool data={[prizePool, id]}/>
+                    )
+                })}
+            </div>
+            <Button onClick={func}>Get Prize Pool</Button>
+            <CreatePrizePool />
       </div>
     );
   }
