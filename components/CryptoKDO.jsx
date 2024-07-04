@@ -58,27 +58,6 @@ const CryptoKDO = () => {
         setPrizePools(prizePoolsArray);
     }
 
-    const func = async() => {
-        try{
-            const data = await publicClient.readContract({
-                address: contractAddress,
-                abi: contractAbi,
-                functionName: 'getPrizePool',
-                args: [2]
-            });
-            toast({
-                title: "Prize Pool",
-                description : data.owner
-            });
-        } catch(error){
-            toast({
-                variant: "destructive",
-                title: error.name,
-                description : error.shortMessage
-            });
-        }
-    }
-
     useEffect(() => {
         getPrizePools();
     }, [])
@@ -92,7 +71,7 @@ const CryptoKDO = () => {
                     )
                 })}
             </div>
-            <Button onClick={func}>Get Prize Pool</Button>
+            <Button onClick={getPrizePools}>Get Prize Pools</Button>
             <CreatePrizePool />
       </div>
     );
