@@ -1,4 +1,6 @@
 'use client'
+import { useState, useEffect } from "react"
+
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button"
 
@@ -12,6 +14,8 @@ import {  useReadContract, useAccount, useWriteContract, useWaitForTransactionRe
 import { readContract, parseAbiItem, parseEther, formatEther } from "viem";
 
 const CryptoKDO = () => {
+
+    const [prizePools, setPrizePools] = useState([]);
 
     const { address } = useAccount();
     const { toast } = useToast()
@@ -32,6 +36,28 @@ const CryptoKDO = () => {
          }*/
      })
 
+    
+    const getPrizePools = async() => {
+        let done = false;
+        let i = 0;
+        let prizePoolsArray = [];
+        while(!done){
+            try{
+                const data = await publicClient.readContract({
+                    address: contractAddress,
+                    abi: contractAbi,
+                    functionName: 'getPrizePool',
+                    args: [i]
+                });
+                prizePoolsArray.push(data);
+                i++;
+            } catch(error){
+                done = true;
+            }
+        }
+        setPrizePools(prizePoolsArray);
+    }
+
     const func = async() => {
         try{
             const data = await publicClient.readContract({
@@ -51,72 +77,22 @@ const CryptoKDO = () => {
                 description : error.shortMessage
             });
         }
-       /* if(isSuccess){
-            toast({
-                title: "Prize Pool",
-                description : prizePoolGet.owner
-            });
-        }else{
-            toast({
-                variant: "destructive",
-                title: getError.name,
-                description : getError.shortMessage
-            });
-        }*/
     }
 
-    const func2 = async() => {
-        await writeContract({
-            address: contractAddress,
-            abi: contractAbi,
-            functionName: 'createPrizePool',
-            args: ["0xFe6f7252c10108f906fd5361baE6CC569bd0d07e",["0xFe6f7252c10108f906fd5361baE6CC569bd0d07e"]]
-        })
-    }
-
-    const donate = async() => {
-        await writeContract({
-            address: contractAddress,
-            abi: contractAbi,
-            functionName: 'donate',
-            value: parseEther('0.003'),
-            args: [0]
-        })
-    }
-
-    const closePrizePool = async() => {
-        await writeContract({
-            address: contractAddress,
-            abi: contractAbi,
-            functionName: 'closePrizePool',
-            args: [0]
-        })
-    }
+    useEffect(() => {
+        getPrizePools();
+    }, [])
 
     return (
         <div className="flex flex-col justify-end">
         <div className="flex flex-row flex-wrap gap-3 m-3 justify-center">
-          <PrizePool />
-          <PrizePool />
-          <PrizePool />
-          <PrizePool />
-          <PrizePool />
-          <PrizePool />
-          <PrizePool />
-          <PrizePool />
-          <PrizePool />
-          <PrizePool />
-          <PrizePool />
-          <PrizePool />
-          <PrizePool />
-          <PrizePool />
-          <PrizePool />
-          <PrizePool />
-          <PrizePool />
-          <PrizePool />
+            {prizePools.length > 0 && prizePools.map((prizePool, id) => {
+                return (
+                    <PrizePool data={[prizePool, id]}/>
+                )
+            })}
         </div>
         <Button onClick={func}>Get Prize Pool</Button>
-        <Button onClick={func2}>Create Prize Pool</Button>
         <CreatePrizePool />
       </div>
     );

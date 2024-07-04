@@ -5,20 +5,48 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-    DialogFooter
+    DialogFooter,
+    DialogClose
   } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 import { useState } from "react"
-  
+
+import { publicClientSepolia as publicClient } from "@/utils/client";
+import { contractAddress, contractAbi } from "@/constant";
+
+import {  useReadContract, useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { readContract, parseAbiItem, parseEther, formatEther } from "viem";
 
 const CreatePrizePool = () => {
 
     const [receiver, setReceiver] = useState('');
     const [currentGiver, setCurrentGiver] = useState('');
     const [givers, setGivers] = useState([]);
+
+    const { address } = useAccount();
+
+    const {data: hash, error, isPending: setIsPending, writeContract } = useWriteContract({
+        /* mutation: {
+             onSuccess: () => {
+ 
+             },
+             onError: (error) => {
+ 
+             }
+         }*/
+     })
+
+     const createPrizePool = async() => {
+        await writeContract({
+            address: contractAddress,
+            abi: contractAbi,
+            functionName: 'createPrizePool',
+            args: [receiver,givers]
+        })
+    }
 
     const handleAddGiver = () => {
         let newGivers = givers.slice();
@@ -74,7 +102,7 @@ const CreatePrizePool = () => {
               <Button onClick={handleAddGiver}>Add Giver</Button>
             </div>
             <DialogFooter>
-              <Button type="submit">Create</Button>
+              <DialogClose type="submit" onClick={createPrizePool}>Create</DialogClose>
             </DialogFooter>
           </DialogContent>
         </Dialog>
