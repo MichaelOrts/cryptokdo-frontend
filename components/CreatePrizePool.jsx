@@ -68,7 +68,7 @@ const CreatePrizePool = () => {
     return (
         <Dialog>
           <DialogTrigger asChild>
-            <Button>Create Prize Pool</Button>
+            <Button disabled={!address}>Create Prize Pool</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader className="flex items-center">
@@ -82,7 +82,7 @@ const CreatePrizePool = () => {
                 <Label htmlFor="receiver" className="text-left">
                   Receiver :
                 </Label>
-                <Input id="receiver" defaultValue="" className="col-span-3" value={receiver} onChange={ e => isAddress(e.target.value)? setReceiver(e.target.value):null} />
+                <Input id="receiver" defaultValue="" className="col-span-3" value={receiver} onChange={ e => isAddress(e.target.value) && setReceiver(e.target.value)} />
               </div>
               <Label htmlFor="givers" className="text-center font-bold">
                   Givers
@@ -91,7 +91,7 @@ const CreatePrizePool = () => {
                 <Label htmlFor="giver" className="text-left">
                   Giver :
                 </Label>
-                <Input id="giver" defaultValue="" className="col-span-3" value={currentGiver} onChange={ e => isAddress(e.target.value)? setCurrentGiver(e.target.value):null} />
+                <Input id="giver" defaultValue="" className="col-span-3" value={currentGiver} onChange={ e => isAddress(e.target.value) && setCurrentGiver(e.target.value)} />
               </div>
               <div>
                 {givers.length > 0 && givers.map((giver, id) => {
@@ -103,10 +103,10 @@ const CreatePrizePool = () => {
                     )
                 })}
               </div>
-              <Button className="justify-self-center" onClick={handleAddGiver}>Add Giver</Button>
+              <Button className="justify-self-center" disabled={!currentGiver} onClick={handleAddGiver}>Add Giver</Button>
             </div>
             <DialogFooter className="grid grid-cols-1">
-              <DialogClose type="submit" className="h-10 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90" onClick={createPrizePool}>Create</DialogClose>
+              <DialogClose type="submit" className="h-10 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90" disabled={!(receiver && givers.length > 0)} onClick={createPrizePool}>Create</DialogClose>
             </DialogFooter>
           </DialogContent>
         </Dialog>

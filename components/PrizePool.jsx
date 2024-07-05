@@ -21,6 +21,7 @@ import { formatEther, parseEther } from "viem"
 const PrizePool = ({data}) => {
 
     const [amount, setAmount] = useState(0);
+    const [donateError, setDonateError] = useState(true);
 
     const { address } = useAccount();
 
@@ -43,6 +44,7 @@ const PrizePool = ({data}) => {
             value: parseEther(amount.toString()),
             args: [data[1]]
         })
+        setAmount(0)
     }
 
     const closePrizePool = async() => {
@@ -52,6 +54,10 @@ const PrizePool = ({data}) => {
             functionName: 'closePrizePool',
             args: [data[1]]
         })
+    }
+
+    const isGiver = () => {
+        return data[0].givers.find(giver => giver.toLowerCase() === address.toLowerCase())
     }
 
     return (
@@ -75,11 +81,12 @@ const PrizePool = ({data}) => {
                 <p className="text-right">{formatEther(data[0].amount)} ETH</p>
             </CardContent>
             <CardFooter className="h-full flex flex-col gap-2 flex-wrap place-content-end">
+                {donateError && <p className="text-red-500 w-full">Amount must be greater than 0.003 ether</p>}
                 <div className="flex flex-row flex-span w-full gap-2">
-                    <Input id="amount" defaultValue="" className="w-full" type="number" value={amount} onChange={ e => setAmount(e.target.value)} />
-                    <Button className="" onClick={donate}>Donate</Button>
+                    <Input id="amount" defaultValue="" className="w-full" type="number" value={amount} onChange={ e => setAmount(e.target.value) & setDonateError(e.target.value < 0.003)} />
+                    <Button className="" disabled={!address || !isGiver() || donateError} onClick={donate}>Donate</Button>
                 </div>
-                <Button className="w-full" onClick={closePrizePool}>Close</Button>
+                <Button className="w-full" disabled={!address || address.toLowerCase() != data[0].owner.toLowerCase()} onClick={closePrizePool}>Close</Button>
             </CardFooter>
         </Card>
     );
