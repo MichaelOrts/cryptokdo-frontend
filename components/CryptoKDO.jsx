@@ -10,7 +10,7 @@ import CreatePrizePool from "./CreatePrizePool";
 import { publicClientSepolia as publicClient } from "@/utils/client";
 import { contractAddress, contractAbi } from "@/constant";
 
-import {  useReadContract, useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import {  useReadContract, useAccount, useWriteContract, useWatchContractEvent } from "wagmi";
 import { readContract, parseAbiItem, parseEther, formatEther } from "viem";
 
 const CryptoKDO = () => {
@@ -26,16 +26,108 @@ const CryptoKDO = () => {
     });
 
     const {data: hash, error, isPending: setIsPending, writeContract } = useWriteContract({
-        /* mutation: {
-             onSuccess: () => {
+        mutation: {
+            onSuccess: () => {
  
-             },
-             onError: (error) => {
- 
-             }
-         }*/
+            },
+            onError: (error) => {
+                toast({
+                    title: error.name,
+                    description: error.message,
+                    className: "bg-red-200"
+                })
+            }
+        }
      })
 
+     const showPrizePoolCreated = (args) => {
+        return (
+            <div>
+                <p>id : {args.id.toString()}</p>
+                <p>owner : {args.owner}</p>
+                <p>receiver : {args.receiver}</p>
+                <p>givers :</p>
+                {args.givers.map(giver => {
+                    return (<p>{giver}</p>)
+                })}
+            </div>
+        )
+     }
+
+     const showDonationDone = (args) => {
+        return (
+            <div>
+                <p>id : {args.id.toString()}</p>
+                <p>giver : {args.giver}</p>
+                <p>amount : {formatEther(args.amount.toString())}</p>
+            </div>
+        )
+     }
+
+     const showPrizePoolClosed = (args) => {
+        return (
+            <div>
+                <p>owner : {args.owner}</p>
+                <p>receiver : {args.receiver}</p>
+                <p>givers :</p>
+                {args.givers.map(giver => {
+                    return (<p>{giver}</p>)
+                })}
+                <p>amount : {formatEther(args.amount.toString())}</p>
+            </div>
+        )
+     }
+
+     useWatchContractEvent({
+        address: contractAddress,
+        abi: contractAbi,
+        eventName: 'PrizePoolCreated',
+        pollingInterval: 1_000,
+        onLogs(logs) {
+            logs.map(log => {
+                toast({
+                    title: "PrizePoolCreated",
+                    description: showPrizePoolCreated(log.args),
+                    className: "bg-lime-200"
+                })
+            });
+            getPrizePools();
+        }
+      })
+
+      useWatchContractEvent({
+        address: contractAddress,
+        abi: contractAbi,
+        eventName: 'DonationDone',
+        pollingInterval: 1_000,
+        onLogs(logs) {
+            logs.map(log => {
+                toast({
+                    title: "DonationDone",
+                    description: showDonationDone(log.args),
+                    className: "bg-lime-200"
+                })
+            });
+            getPrizePools();
+        }
+      })
+
+      useWatchContractEvent({
+        address: contractAddress,
+        abi: contractAbi,
+        eventName: 'PrizePoolClosed',
+        pollingInterval: 1_000,
+        onLogs(logs) {
+            logs.map(log => {
+                toast({
+                    title: "PrizePoolClosed",
+                    description: showPrizePoolClosed(log.args.prizePool),
+                    className: "bg-lime-200"
+                })
+            });
+            getPrizePools();
+        }
+      })
     
     const getPrizePools = async() => {
         let done = false;
