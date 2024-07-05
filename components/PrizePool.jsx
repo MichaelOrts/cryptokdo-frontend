@@ -76,7 +76,7 @@ const PrizePool = ({data}) => {
             </CardContent>
             <CardFooter className="h-full flex flex-col gap-2 flex-wrap place-content-end">
                 <div className="flex flex-row flex-span w-full gap-2">
-                    <Input id="amount" defaultValue="" className="w-full" value={amount} onChange={ e => setAmount(e.target.value)} />
+                    <Input id="amount" defaultValue="" className="w-full" type="number" value={amount} onChange={ e => setAmount(e.target.value)} />
                     <Button className="" onClick={donate}>Donate</Button>
                 </div>
                 <Button className="w-full" onClick={closePrizePool}>Close</Button>

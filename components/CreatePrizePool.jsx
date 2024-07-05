@@ -61,6 +61,10 @@ const CreatePrizePool = () => {
         setGivers(newGivers);
     }
 
+    const isAddress = (str) => {
+        return new RegExp("0x[a-fA-F0-9]{40}$").test(str);
+    }
+
     return (
         <Dialog>
           <DialogTrigger asChild>
@@ -78,7 +82,7 @@ const CreatePrizePool = () => {
                 <Label htmlFor="receiver" className="text-left">
                   Receiver :
                 </Label>
-                <Input id="receiver" defaultValue="" className="col-span-3" value={receiver} onChange={ e => setReceiver(e.target.value)} />
+                <Input id="receiver" defaultValue="" className="col-span-3" value={receiver} onChange={ e => isAddress(e.target.value)? setReceiver(e.target.value):null} />
               </div>
               <Label htmlFor="givers" className="text-center font-bold">
                   Givers
@@ -87,7 +91,7 @@ const CreatePrizePool = () => {
                 <Label htmlFor="giver" className="text-left">
                   Giver :
                 </Label>
-                <Input id="giver" defaultValue="" className="col-span-3" value={currentGiver} onChange={ e => setCurrentGiver(e.target.value)} />
+                <Input id="giver" defaultValue="" className="col-span-3" value={currentGiver} onChange={ e => isAddress(e.target.value)? setCurrentGiver(e.target.value):null} />
               </div>
               <div>
                 {givers.length > 0 && givers.map((giver, id) => {
