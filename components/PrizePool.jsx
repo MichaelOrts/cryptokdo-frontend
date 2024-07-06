@@ -63,8 +63,8 @@ const PrizePool = ({data}) => {
     return (
         <Card className="flex flex-col bg-gradient-to-b from-blue-500 to-purple-500">
             <CardHeader className="">
-                <CardTitle>Prize Pool</CardTitle>
-                <CardDescription>Prize Pool Description</CardDescription>
+                <CardTitle>{data[0].title}</CardTitle>
+                <CardDescription>{data[0].description}</CardDescription>
             </CardHeader>
             <CardContent className="">
                 <p className="font-bold">Owner</p>

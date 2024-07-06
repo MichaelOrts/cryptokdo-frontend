@@ -25,6 +25,8 @@ const CreatePrizePool = () => {
     const [receiver, setReceiver] = useState('');
     const [currentGiver, setCurrentGiver] = useState('');
     const [givers, setGivers] = useState([]);
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
 
     const { address } = useAccount();
 
@@ -44,7 +46,7 @@ const CreatePrizePool = () => {
             address: contractAddress,
             abi: contractAbi,
             functionName: 'createPrizePool',
-            args: [receiver,givers]
+            args: [receiver,givers,title,description]
         })
     }
 
@@ -70,7 +72,7 @@ const CreatePrizePool = () => {
           <DialogTrigger asChild>
             <Button disabled={!address}>Create Prize Pool</Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[525px]">
             <DialogHeader className="flex items-center">
               <DialogTitle>Create Prize Pool</DialogTitle>
               <DialogDescription>
@@ -78,6 +80,18 @@ const CreatePrizePool = () => {
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="title" className="text-left">
+                  Title :
+                </Label>
+                <Input id="title" defaultValue="" className="col-span-3" value={title} onChange={ e => setTitle(e.target.value)} />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="description" className="text-left">
+                  Description :
+                </Label>
+                <Input id="description" defaultValue="" className="col-span-3" value={description} onChange={ e => setDescription(e.target.value)} />
+              </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="receiver" className="text-left">
                   Receiver :
@@ -106,7 +120,7 @@ const CreatePrizePool = () => {
               <Button className="justify-self-center" disabled={!currentGiver} onClick={handleAddGiver}>Add Giver</Button>
             </div>
             <DialogFooter className="grid grid-cols-1">
-              <DialogClose type="submit" className="h-10 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90" disabled={!(receiver && givers.length > 0)} onClick={createPrizePool}>Create</DialogClose>
+              <DialogClose type="submit" className="h-10 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90" disabled={!(receiver && givers.length > 0 && title != "")} onClick={createPrizePool}>Create</DialogClose>
             </DialogFooter>
           </DialogContent>
         </Dialog>

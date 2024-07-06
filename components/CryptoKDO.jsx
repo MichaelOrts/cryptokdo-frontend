@@ -44,6 +44,8 @@ const CryptoKDO = () => {
         return (
             <div>
                 <p>id : {args.id.toString()}</p>
+                <p>title : {args.title}</p>
+                <p>description : {args.description}</p>
                 <p>owner : {args.owner}</p>
                 <p>receiver : {args.receiver}</p>
                 <p>givers :</p>
@@ -67,6 +69,8 @@ const CryptoKDO = () => {
      const showPrizePoolClosed = (args) => {
         return (
             <div>
+                <p>title : {args.title}</p>
+                <p>description : {args.description}</p>
                 <p>owner : {args.owner}</p>
                 <p>receiver : {args.receiver}</p>
                 <p>givers :</p>
@@ -130,23 +134,11 @@ const CryptoKDO = () => {
       })
     
     const getPrizePools = async() => {
-        let done = false;
-        let i = 0;
-        let prizePoolsArray = [];
-        while(!done){
-            try{
-                const data = await publicClient.readContract({
-                    address: contractAddress,
-                    abi: contractAbi,
-                    functionName: 'getPrizePool',
-                    args: [i]
-                });
-                prizePoolsArray.push(data);
-                i++;
-            } catch(error){
-                done = true;
-            }
-        }
+        const prizePoolsArray = await publicClient.readContract({
+            address: contractAddress,
+            abi: contractAbi,
+            functionName: 'getAllPrizePools',
+        });
         setPrizePools(prizePoolsArray);
     }
 
