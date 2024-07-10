@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 
 import PrizePool from "@/components/PrizePool"
 import CreatePrizePool from "./CreatePrizePool";
+import Dashboard from "./Dashboard";
 
 import { publicClientSepolia as publicClient } from "@/utils/client";
 import { contractAddress, contractAbi } from "@/constant";
@@ -16,6 +17,8 @@ import { readContract, parseAbiItem, parseEther, formatEther } from "viem";
 const CryptoKDO = () => {
 
     const [prizePools, setPrizePools] = useState([]);
+    const [totalPrizePools, setTotalPrizePools] = useState(0);
+    const [totalSupply, setTotalSupply] = useState(0);
 
     const { address } = useAccount();
     const { toast } = useToast()
@@ -95,7 +98,7 @@ const CryptoKDO = () => {
                     className: "bg-lime-200"
                 })
             });
-            getPrizePools();
+            refetchCryptoKDO();
         }
       })
 
@@ -112,7 +115,7 @@ const CryptoKDO = () => {
                     className: "bg-lime-200"
                 })
             });
-            getPrizePools();
+            refetchCryptoKDO();
         }
       })
 
@@ -129,7 +132,7 @@ const CryptoKDO = () => {
                     className: "bg-lime-200"
                 })
             });
-            getPrizePools();
+            refetchCryptoKDO();
         }
       })
     
@@ -142,12 +145,37 @@ const CryptoKDO = () => {
         setPrizePools(prizePoolsArray);
     }
 
-    useEffect(() => {
+    const getTotalPrizePools = async() => {
+        const total = await publicClient.readContract({
+            address: contractAddress,
+            abi: contractAbi,
+            functionName: 'getTotalPrizePools',
+        });
+        setTotalPrizePools(total);
+    }
+
+    const getTotalSupply = async() => {
+        const supply = await publicClient.readContract({
+            address: contractAddress,
+            abi: contractAbi,
+            functionName: 'getTotalSupply',
+        });
+        setTotalSupply(supply);
+    }
+
+    const refetchCryptoKDO = async() => {
         getPrizePools();
+        getTotalPrizePools();
+        getTotalSupply();
+    }
+
+    useEffect(() => {
+        refetchCryptoKDO();
     }, [])
 
     return (
-        <div className="flex flex-col justify-end gap-3">
+        <div className="flex flex-col w-1/2 justify-end gap-3 m-3">
+            <Dashboard totalPrizePools={totalPrizePools} totalSupply={totalSupply} />
             <div className="flex flex-row flex-wrap gap-3 m-3 justify-center">
                 {prizePools.length > 0 && prizePools.map((prizePool, id) => {
                     return (

@@ -68,13 +68,13 @@ const PrizePool = ({data}) => {
             </CardHeader>
             <CardContent className="">
                 <p className="font-bold">Owner</p>
-                <p className="text-right">{data[0].owner.toLowerCase()}</p>
+                <p className={data[0].owner.toLowerCase() === address.toLowerCase()? "text-right font-bold" : "text-right font-bold"}>{data[0].owner.toLowerCase()}</p>
                 <p className="font-bold">Receiver</p>
-                <p className="text-right">{data[0].receiver.toLowerCase()}</p>
+                <p className={data[0].receiver.toLowerCase() === address.toLowerCase()? "text-right font-bold" : "text-right"}>{data[0].receiver.toLowerCase()}</p>
                 <p className="font-bold">Givers</p>
                 {data[0].givers.length > 0 && data[0].givers.map((giver, id) => {
                     return (
-                        <p className="text-right">{giver.toLowerCase()}</p>
+                        <p className={giver.toLowerCase() === address.toLowerCase()? "text-right font-bold" : "text-right"}>{giver.toLowerCase()}</p>
                     )
                 })}
                 <p className="font-bold">Amount</p>
@@ -83,7 +83,7 @@ const PrizePool = ({data}) => {
             <CardFooter className="h-full flex flex-col gap-2 flex-wrap place-content-end">
                 {donateError && <p className="text-red-500 w-full">Amount must be greater than 0.003 ether</p>}
                 <div className="flex flex-row flex-span w-full gap-2">
-                    <Input id="amount" defaultValue="" className="w-full" type="number" value={amount} onChange={ e => setAmount(e.target.value) & setDonateError(e.target.value < 0.003)} />
+                    <Input id="amount" defaultValue="" className="w-full" disabled={!address || !isGiver()} type="number" value={amount} onChange={ e => setAmount(e.target.value) & setDonateError(e.target.value < 0.003)} />
                     <Button className="" disabled={!address || !isGiver() || donateError} onClick={donate}>Donate</Button>
                 </div>
                 <Button className="w-full" disabled={!address || address.toLowerCase() != data[0].owner.toLowerCase()} onClick={closePrizePool}>Close</Button>

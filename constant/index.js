@@ -1,7 +1,18 @@
-export const contractAddress = "0xdE666050fACBe46BCCBcC5D7e7892a838C05934f";
+export const contractAddress = "0x3248836fab027Ed106A44eCdc2F97b59D2f13E91";
 export const contractAbi = [
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "contract IWrappedTokenGatewayV3",
+        "name": "wtg",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IERC20",
+        "name": "erc20",
+        "type": "address"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
@@ -312,6 +323,19 @@ export const contractAbi = [
   {
     "inputs": [],
     "name": "getTotalPrizePools",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTotalSupply",
     "outputs": [
       {
         "internalType": "uint256",
