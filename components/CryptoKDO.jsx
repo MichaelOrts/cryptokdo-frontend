@@ -8,8 +8,8 @@ import PrizePool from "@/components/PrizePool"
 import CreatePrizePool from "./CreatePrizePool";
 import Dashboard from "./Dashboard";
 
-import { publicClientSepolia as publicClient } from "@/utils/client";
-import { contractAddress, contractAbi } from "@/constant";
+import { publicClientHardhat, publicClientSepolia } from "@/utils/client";
+import { contractAddressHardhat, contractAddressSepolia, contractAbi } from "@/constant";
 
 import {  useReadContract, useAccount, useWriteContract, useWatchContractEvent } from "wagmi";
 import { readContract, parseAbiItem, parseEther, formatEther } from "viem";
@@ -19,9 +19,18 @@ const CryptoKDO = () => {
     const [prizePools, setPrizePools] = useState([]);
     const [totalPrizePools, setTotalPrizePools] = useState(0);
     const [totalSupply, setTotalSupply] = useState(0);
+    const [publicClient, setPublicClient] = useState(publicClientSepolia);
+    const [contractAddress, setContractAddress] = useState(contractAddressSepolia)
+    const [refetch, setRefetch] = useState(true)
 
-    const { address } = useAccount();
-    const { toast } = useToast()
+    const { address, chain } = useAccount();
+    const { toast } = useToast();
+
+    useEffect(() => {
+        const id = setInterval( () => {
+          setRefetch(true)
+        }, 5000);
+      }, []);
     
     const { data: prizePoolGet, error: getError, isSuccess } = useReadContract({
         address: contractAddress,
@@ -170,8 +179,16 @@ const CryptoKDO = () => {
     }
 
     useEffect(() => {
-        refetchCryptoKDO();
-    }, [])
+        setPublicClient(chain?.name === "Hardhat" ? publicClientHardhat : publicClientSepolia)
+        setContractAddress(chain?.name === "Hardhat" ? contractAddressHardhat : contractAddressSepolia)
+    }, [chain])
+
+    useEffect(() => {
+        if(refetch){
+            refetchCryptoKDO();
+            setRefetch(false);
+        }
+    }, [publicClient, refetch])
 
     return (
         <div className="flex flex-col w-1/2 justify-end gap-3 m-3">
@@ -183,8 +200,9 @@ const CryptoKDO = () => {
                     )
                 })}
             </div>
-            <Button onClick={getPrizePools}>Get Prize Pools</Button>
+            <Button onClick={refetchCryptoKDO}>Refetch</Button>
             <CreatePrizePool />
+            <p>{chain && chain.id}</p>
       </div>
     );
   }

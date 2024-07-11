@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import {
     Card,
@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 import { publicClientSepolia as publicClient } from "@/utils/client";
-import { contractAddress, contractAbi } from "@/constant";
+import { contractAddressHardhat, contractAddressSepolia, contractAbi } from "@/constant";
 
 import {  useReadContract, useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 
@@ -22,8 +22,9 @@ const PrizePool = ({data}) => {
 
     const [amount, setAmount] = useState(0);
     const [donateError, setDonateError] = useState(true);
+    const [contractAddress, setContractAddress] = useState(contractAddressSepolia)
 
-    const { address } = useAccount();
+    const { address, chain } = useAccount();
 
     const {data: hash, error, isPending: setIsPending, writeContract } = useWriteContract({
         /* mutation: {
@@ -45,6 +46,7 @@ const PrizePool = ({data}) => {
             args: [data[1]]
         })
         setAmount(0)
+        setDonateError(true)
     }
 
     const closePrizePool = async() => {
@@ -60,6 +62,10 @@ const PrizePool = ({data}) => {
         return data[0].givers.find(giver => giver.toLowerCase() === address.toLowerCase())
     }
 
+    useEffect(() => {
+        setContractAddress(chain?.name === "Hardhat" ? contractAddressHardhat : contractAddressSepolia)
+      }, [chain])
+
     return (
         <Card className="flex flex-col bg-gradient-to-b from-blue-500 to-purple-500">
             <CardHeader className="">
@@ -68,13 +74,13 @@ const PrizePool = ({data}) => {
             </CardHeader>
             <CardContent className="">
                 <p className="font-bold">Owner</p>
-                <p className={data[0].owner.toLowerCase() === address.toLowerCase()? "text-right font-bold" : "text-right font-bold"}>{data[0].owner.toLowerCase()}</p>
+                <p className={data[0].owner.toLowerCase() === address?.toLowerCase()? "text-right font-bold" : "text-right font-bold"}>{data[0].owner.toLowerCase()}</p>
                 <p className="font-bold">Receiver</p>
-                <p className={data[0].receiver.toLowerCase() === address.toLowerCase()? "text-right font-bold" : "text-right"}>{data[0].receiver.toLowerCase()}</p>
+                <p className={data[0].receiver.toLowerCase() === address?.toLowerCase()? "text-right font-bold" : "text-right"}>{data[0].receiver.toLowerCase()}</p>
                 <p className="font-bold">Givers</p>
                 {data[0].givers.length > 0 && data[0].givers.map((giver, id) => {
                     return (
-                        <p className={giver.toLowerCase() === address.toLowerCase()? "text-right font-bold" : "text-right"}>{giver.toLowerCase()}</p>
+                        <p className={giver.toLowerCase() === address?.toLowerCase()? "text-right font-bold" : "text-right"}>{giver.toLowerCase()}</p>
                     )
                 })}
                 <p className="font-bold">Amount</p>

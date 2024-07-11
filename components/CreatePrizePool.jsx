@@ -12,10 +12,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { publicClientSepolia as publicClient } from "@/utils/client";
-import { contractAddress, contractAbi } from "@/constant";
+import { contractAddressHardhat, contractAddressSepolia, contractAbi } from "@/constant";
 
 import {  useReadContract, useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { readContract, parseAbiItem, parseEther, formatEther } from "viem";
@@ -27,8 +27,9 @@ const CreatePrizePool = () => {
     const [givers, setGivers] = useState([]);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [contractAddress, setContractAddress] = useState(contractAddressSepolia)
 
-    const { address } = useAccount();
+    const { address, chain } = useAccount();
 
     const {data: hash, error, isPending: setIsPending, writeContract } = useWriteContract({
         /* mutation: {
@@ -66,6 +67,10 @@ const CreatePrizePool = () => {
     const isAddress = (str) => {
         return new RegExp("0x[a-fA-F0-9]{40}$").test(str);
     }
+
+    useEffect(() => {
+      setContractAddress(chain?.name === "Hardhat" ? contractAddressHardhat : contractAddressSepolia)
+    }, [chain])
 
     return (
         <Dialog>
