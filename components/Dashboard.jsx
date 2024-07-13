@@ -16,7 +16,7 @@ import {  useReadContract, useAccount, useWaitForTransactionReceipt } from "wagm
 
 import { formatEther, parseEther } from "viem"
 
-const Dashboard = ({totalPrizePools, totalSupply}) => {
+const Dashboard = ({totalPrizePools, totalSupply, reward, lastWinner, lotteryCounter}) => {
 
     const { address } = useAccount();
 
@@ -31,6 +31,12 @@ const Dashboard = ({totalPrizePools, totalSupply}) => {
                 <p className="text-right font-bold">{totalPrizePools.toString()}</p>
                 <p className="font-bold">Supply Deposited</p>
                 <p className="text-right font-bold">{formatEther(totalSupply)} ETH</p>
+                <p className="font-bold">Current Rewards</p>
+                <p className="text-right font-bold">{formatEther(reward)} ETH</p>
+                <p className="font-bold">Last Winner Id</p>
+                <p className="text-right font-bold">{lastWinner.toString()}</p>
+                <p className="font-bold">Counter Before Rewards</p>
+                <p className="text-right font-bold">{lotteryCounter.toString()} ETH</p>
             </CardContent>
             <CardFooter className="h-full flex flex-col gap-2 flex-wrap place-content-end">
             </CardFooter>

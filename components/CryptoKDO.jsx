@@ -19,6 +19,9 @@ const CryptoKDO = () => {
     const [prizePools, setPrizePools] = useState([]);
     const [totalPrizePools, setTotalPrizePools] = useState(0);
     const [totalSupply, setTotalSupply] = useState(0);
+    const [reward, setReward] = useState(0);
+    const [lastWinner, setLastWinner] = useState(0);
+    const [lotteryTime, setLotteryTime] = useState(0);
     const [publicClient, setPublicClient] = useState(publicClientSepolia);
     const [contractAddress, setContractAddress] = useState(contractAddressSepolia)
     const [refetch, setRefetch] = useState(true)
@@ -94,6 +97,15 @@ const CryptoKDO = () => {
         )
      }
 
+     const showWinningPrizePool = (args) => {
+        return (
+            <div>
+                <p>id : {args.id}</p>
+                <p>reward : {args.reward}</p>
+            </div>
+        )
+     }
+
      useWatchContractEvent({
         address: contractAddress,
         abi: contractAbi,
@@ -144,6 +156,8 @@ const CryptoKDO = () => {
             refetchCryptoKDO();
         }
       })
+
+      
     
     const getPrizePools = async() => {
         const prizePoolsArray = await publicClient.readContract({
@@ -167,15 +181,54 @@ const CryptoKDO = () => {
         const supply = await publicClient.readContract({
             address: contractAddress,
             abi: contractAbi,
-            functionName: 'getTotalSupply',
+            functionName: 'currentSupply',
         });
         setTotalSupply(supply);
+    }
+
+    const getReward = async() => {
+        const currentReward = await publicClient.readContract({
+            address: contractAddress,
+            abi: contractAbi,
+            functionName: 'reward',
+        });
+        setReward(currentReward);
+    }
+
+    const getLastWinner = async() => {
+        const winner = await publicClient.readContract({
+            address: contractAddress,
+            abi: contractAbi,
+            functionName: 'winningPrizePoolId',
+        });
+        setLastWinner(winner);
+    }
+
+    const getLotteryTime = async() => {
+        const lotteryTimestamp = await publicClient.readContract({
+            address: contractAddress,
+            abi: contractAbi,
+            functionName: 'lastLotteryTimestamp',
+        });
+        setLotteryTime(lotteryTimestamp);
+    }
+
+    const updateRewards = async() => {
+        await writeContract({
+            address: contractAddress,
+            abi: contractAbi,
+            functionName: 'updateRewards'
+        })
+        refetchCryptoKDO();
     }
 
     const refetchCryptoKDO = async() => {
         getPrizePools();
         getTotalPrizePools();
         getTotalSupply();
+        getReward();
+        getLastWinner();
+        getLotteryTime();
     }
 
     useEffect(() => {
@@ -192,17 +245,16 @@ const CryptoKDO = () => {
 
     return (
         <div className="flex flex-col w-1/2 justify-end gap-3 m-3">
-            <Dashboard totalPrizePools={totalPrizePools} totalSupply={totalSupply} />
-            <div className="flex flex-row flex-wrap gap-3 m-3 justify-center">
+            <Dashboard totalPrizePools={totalPrizePools} totalSupply={totalSupply} reward={reward} lastWinner={lastWinner} lotteryCounter={lotteryTime} />
+            <div className="flex flex-row flex-stretch gap-3 m-3 justify-center">
                 {prizePools.length > 0 && prizePools.map((prizePool, id) => {
                     return (
                         <PrizePool data={[prizePool, id]}/>
                     )
                 })}
             </div>
-            <Button onClick={refetchCryptoKDO}>Refetch</Button>
+            <Button onClick={updateRewards}>Refetch</Button>
             <CreatePrizePool />
-            <p>{chain && chain.id}</p>
       </div>
     );
   }

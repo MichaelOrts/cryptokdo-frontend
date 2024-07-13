@@ -1,5 +1,5 @@
-export const contractAddressSepolia = "0x3248836fab027Ed106A44eCdc2F97b59D2f13E91";
-export const contractAddressHardhat = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
+export const contractAddressSepolia = "0x6bd457D4607F2486feB7b6EF16384C69EF1383a1";
+export const contractAddressHardhat = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707";
 export const contractAbi = [
   {
     "inputs": [
@@ -12,6 +12,21 @@ export const contractAbi = [
         "internalType": "contract IERC20",
         "name": "erc20",
         "type": "address"
+      },
+      {
+        "internalType": "uint64",
+        "name": "_subscriptionId",
+        "type": "uint64"
+      },
+      {
+        "internalType": "address",
+        "name": "vrfCoordinator",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "_keyHash",
+        "type": "bytes32"
       }
     ],
     "stateMutability": "nonpayable",
@@ -21,22 +36,16 @@ export const contractAbi = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "owner",
+        "name": "have",
         "type": "address"
-      }
-    ],
-    "name": "OwnableInvalidOwner",
-    "type": "error"
-  },
-  {
-    "inputs": [
+      },
       {
         "internalType": "address",
-        "name": "account",
+        "name": "want",
         "type": "address"
       }
     ],
-    "name": "OwnableUnauthorizedAccount",
+    "name": "OnlyCoordinatorCanFulfill",
     "type": "error"
   },
   {
@@ -62,25 +71,6 @@ export const contractAbi = [
       }
     ],
     "name": "DonationDone",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "previousOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnershipTransferred",
     "type": "event"
   },
   {
@@ -213,6 +203,19 @@ export const contractAbi = [
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "currentSupply",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -336,7 +339,38 @@ export const contractAbi = [
   },
   {
     "inputs": [],
-    "name": "getTotalSupply",
+    "name": "lastLotteryTimestamp",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "requestId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "randomWords",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "rawFulfillRandomWords",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "reward",
     "outputs": [
       {
         "internalType": "uint256",
@@ -349,35 +383,22 @@ export const contractAbi = [
   },
   {
     "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
+    "name": "updateRewards",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+    "name": "winningPrizePoolId",
+    "outputs": [
       {
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
