@@ -67,27 +67,27 @@ const PrizePool = ({data}) => {
       }, [chain])
 
     return (
-        <Card className="flex flex-col bg-gradient-to-b from-blue-500 to-purple-500">
+        <Card className={data[2]?"flex flex-col bg-gradient-to-b from-amber-600 to-yellow-600":"flex flex-col bg-gradient-to-b from-blue-400 to-purple-400"}>
             <CardHeader className="">
                 <CardTitle>{data[0].title}</CardTitle>
-                <CardDescription>{data[0].description}</CardDescription>
+                <CardDescription className="text-slate-700">{data[0].description}</CardDescription>
             </CardHeader>
             <CardContent className="">
                 <p className="font-bold">Owner</p>
-                <p className={data[0].owner.toLowerCase() === address?.toLowerCase()? "text-right font-bold" : "text-right font-bold"}>{data[0].owner.toLowerCase()}</p>
+                <p className={data[0].owner.toLowerCase() === address?.toLowerCase()? "text-right text-slate-100" : "text-right"}>{data[0].owner.toLowerCase()}</p>
                 <p className="font-bold">Receiver</p>
-                <p className={data[0].receiver.toLowerCase() === address?.toLowerCase()? "text-right font-bold" : "text-right"}>{data[0].receiver.toLowerCase()}</p>
+                <p className={data[0].receiver.toLowerCase() === address?.toLowerCase()? "text-right text-slate-100" : "text-right"}>{data[0].receiver.toLowerCase()}</p>
                 <p className="font-bold">Givers</p>
                 {data[0].givers.length > 0 && data[0].givers.map((giver, id) => {
                     return (
-                        <p className={giver.toLowerCase() === address?.toLowerCase()? "text-right font-bold" : "text-right"}>{giver.toLowerCase()}</p>
+                        <p className={giver.toLowerCase() === address?.toLowerCase()? "text-right text-slate-100" : "text-right"}>{giver.toLowerCase()}</p>
                     )
                 })}
                 <p className="font-bold">Amount</p>
                 <p className="text-right">{formatEther(data[0].amount)} ETH</p>
             </CardContent>
             <CardFooter className="h-full flex flex-col gap-2 flex-wrap place-content-end">
-                {donateError && <p className="text-red-500 w-full">Amount must be greater than 0.003 ether</p>}
+                {donateError && <p className="text-red-500 font-bold w-full">Amount must be greater than 0.003 ether</p>}
                 <div className="flex flex-row flex-span w-full gap-2">
                     <Input id="amount" defaultValue="" className="w-full" disabled={!address || !isGiver()} type="number" value={amount} onChange={ e => setAmount(e.target.value) & setDonateError(e.target.value < 0.003)} />
                     <Button className="" disabled={!address || !isGiver() || donateError} onClick={donate}>Donate</Button>

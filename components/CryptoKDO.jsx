@@ -11,7 +11,7 @@ import Dashboard from "./Dashboard";
 import { publicClientHardhat, publicClientSepolia } from "@/utils/client";
 import { contractAddressHardhat, contractAddressSepolia, contractAbi } from "@/constant";
 
-import {  useReadContract, useAccount, useWriteContract, useWatchContractEvent } from "wagmi";
+import {  useReadContract, useAccount, useWriteContract, useWatchContractEvent, useWatchBlocks } from "wagmi";
 import { readContract, parseAbiItem, parseEther, formatEther } from "viem";
 
 const CryptoKDO = () => {
@@ -25,15 +25,16 @@ const CryptoKDO = () => {
     const [publicClient, setPublicClient] = useState(publicClientSepolia);
     const [contractAddress, setContractAddress] = useState(contractAddressSepolia)
     const [refetch, setRefetch] = useState(true)
+    const [timestamp, setTimestamp] = useState(0)
 
     const { address, chain } = useAccount();
     const { toast } = useToast();
 
-    useEffect(() => {
+    /*useEffect(() => {
         const id = setInterval( () => {
           setRefetch(true)
         }, 5000);
-      }, []);
+      }, []);*/
     
     const { data: prizePoolGet, error: getError, isSuccess } = useReadContract({
         address: contractAddress,
@@ -110,7 +111,7 @@ const CryptoKDO = () => {
         address: contractAddress,
         abi: contractAbi,
         eventName: 'PrizePoolCreated',
-        pollingInterval: 1_000,
+        poll : true,
         onLogs(logs) {
             logs.map(log => {
                 toast({
@@ -127,7 +128,7 @@ const CryptoKDO = () => {
         address: contractAddress,
         abi: contractAbi,
         eventName: 'DonationDone',
-        pollingInterval: 1_000,
+        poll : true,
         onLogs(logs) {
             logs.map(log => {
                 toast({
@@ -144,7 +145,7 @@ const CryptoKDO = () => {
         address: contractAddress,
         abi: contractAbi,
         eventName: 'PrizePoolClosed',
-        pollingInterval: 1_000,
+        poll : true,
         onLogs(logs) {
             logs.map(log => {
                 toast({
@@ -155,6 +156,14 @@ const CryptoKDO = () => {
             });
             refetchCryptoKDO();
         }
+      })
+
+      useWatchBlocks({
+        poll : true,
+        onBlock(block) {
+          setTimestamp(Number(block.timestamp) * 1000);
+          refetchCryptoKDO();
+        },
       })
 
       
@@ -210,7 +219,7 @@ const CryptoKDO = () => {
             abi: contractAbi,
             functionName: 'lastLotteryTimestamp',
         });
-        setLotteryTime(lotteryTimestamp);
+        setLotteryTime(Number(lotteryTimestamp) * 1000);
     }
 
     const updateRewards = async() => {
@@ -245,11 +254,11 @@ const CryptoKDO = () => {
 
     return (
         <div className="flex flex-col w-1/2 justify-end gap-3 m-3">
-            <Dashboard totalPrizePools={totalPrizePools} totalSupply={totalSupply} reward={reward} lastWinner={lastWinner} lotteryCounter={lotteryTime} />
+            <Dashboard totalPrizePools={totalPrizePools} totalSupply={totalSupply} reward={reward} lastWinner={lastWinner} lotteryCounter={(Number(lotteryTime) + 774000000 - Number(timestamp))} />
             <div className="flex flex-row flex-stretch gap-3 m-3 justify-center">
                 {prizePools.length > 0 && prizePools.map((prizePool, id) => {
                     return (
-                        <PrizePool data={[prizePool, id]}/>
+                        <PrizePool data={[prizePool, id, lastWinner == id]}/>
                     )
                 })}
             </div>

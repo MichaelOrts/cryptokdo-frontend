@@ -20,6 +20,14 @@ const Dashboard = ({totalPrizePools, totalSupply, reward, lastWinner, lotteryCou
 
     const { address } = useAccount();
 
+    const options = {
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric'
+      };
+
+      const counter = new Date(lotteryCounter)
+
     return (
         <Card className="flex flex-col bg-gradient-to-b from-green-500 to-yellow-500">
             <CardHeader className="">
@@ -34,9 +42,9 @@ const Dashboard = ({totalPrizePools, totalSupply, reward, lastWinner, lotteryCou
                 <p className="font-bold">Current Rewards</p>
                 <p className="text-right font-bold">{formatEther(reward)} ETH</p>
                 <p className="font-bold">Last Winner Id</p>
-                <p className="text-right font-bold">{lastWinner.toString()}</p>
+                <p className="text-right font-bold">{lastWinner != -1? lastWinner.toString(): "None"}</p>
                 <p className="font-bold">Counter Before Rewards</p>
-                <p className="text-right font-bold">{lotteryCounter.toString()} ETH</p>
+                <p className="text-right font-bold">{(counter.getDate() < 10? counter.getDate().toString():0) + " days " + counter.toLocaleString('fr-FR', options)}</p>
             </CardContent>
             <CardFooter className="h-full flex flex-col gap-2 flex-wrap place-content-end">
             </CardFooter>
